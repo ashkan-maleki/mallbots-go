@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"eda-in-golang/internal/ddd"
 	"github.com/stackus/errors"
 )
 
@@ -12,7 +13,8 @@ var (
 )
 
 type Order struct {
-	ID         string
+	//ID         string
+	ddd.AggregateBase
 	CustomerID string
 	PaymentID  string
 	InvoiceID  string
@@ -35,7 +37,9 @@ func CreateOrder(id, customerID, paymentID string, items []*Item) (*Order, error
 	}
 
 	order := &Order{
-		ID:         id,
+		AggregateBase: ddd.AggregateBase{
+			ID: id,
+		},
 		CustomerID: customerID,
 		PaymentID:  paymentID,
 		Items:      items,
@@ -74,7 +78,7 @@ func (o *Order) Complete(invoiceID string) error {
 	return nil
 }
 
-func (o Order) GetTotal() float64 {
+func (o *Order) GetTotal() float64 {
 	var total float64
 
 	for _, item := range o.Items {
